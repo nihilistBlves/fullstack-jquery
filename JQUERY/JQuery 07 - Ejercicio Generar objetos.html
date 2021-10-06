@@ -10,7 +10,7 @@
     <input type="range" min="1" max="10" value="1" name="rango" id="rango">
     <h2>Numero de copias</h2>
     <div id="contenedor">
-        <img src="resources/images/imagen1.jpg" height="100">
+        
     </div>
 </body>
     <script src="jquery-3.6.0.js"></script>
@@ -20,20 +20,30 @@
                 var cantidad = $(this).val();
                 $("#contenedor").text("");
                 for (var i = 0; i < cantidad; i++) {
-                    var div = $("<di>", {
-                        "height": 120,
-                        "width": 70
-                    });
                     var imagen = $("<img>", {
                         "src": "resources/images/imagen1.jpg",
                         "height": "100"
                     });
-                    imagen.css("margin", "10px");
-                    var numero = $("<span>");
-                    numero.text(i);
-                    div.append(imagen);
-                    div.append(numero);
-                    $("#contenedor").append(div);
+                    imagen.css({
+                        "margin": "10px",
+                        "cursor": "pointer"
+                    });
+                    imagen.mouseover(function() {
+                        $(this).attr("src", "resources/images/imagen2.jpg");
+                    });
+                    imagen.mouseleave(function() {
+                        $(this).attr("src", "resources/images/imagen1.jpg");
+                    });
+                    imagen.click(function() {
+                        if ($(this).css("height") == "200px") {
+                            $("img").css("height", "100px");
+                            $(this).css("height", "100px");
+                        } else {
+                            $("img").css("height", "100px");
+                            $(this).css("height", "200px");
+                        }
+                    });
+                    $("#contenedor").append(imagen);
                 }
             });
         });
