@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .boton {
+            font-weight: bold;
+            border: none;
+            border-radius: 3px;
+            background-color: rgb(0, 153, 255);
+            color: white;
+            height: 2.5em;
+            width: 6em;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="estilo">
+    <img src="resources/images/imagen1.jpg" height="100px"/>
+    <input type="text" name="caja" value="Dune"/>
+    <button>CLICK ME</button>
+</body>
+    <script src="jquery-3.6.0.js"></script>
+    <script>
+        $(document).ready(function() {
+            //Accediendo al atributo SRC de la imagen, podemos guardarlo, cambiarlo, etc...
+            var imagen = $("img").attr("src");
+            $("button").click(function() {
+                if (imagen == "resources/images/imagen1.jpg") {
+                    $("img").attr("src", "resources/images/imagen2.jpg");
+                    imagen = $("img").attr("src");
+                    $("input").attr("type", "text").val("Dune: El mesias de Dune");
+                } else if ($("img").attr("src") == "resources/images/imagen2.jpg") {
+                    $("img").attr("src", "resources/images/imagen3.jpg");
+                    imagen = $("img").attr("src");
+                    $("input").attr("type", "text").val("Dune: Hijos de Dune");
+                } else {
+                    $("img").attr("src", "resources/images/imagen1.jpg");
+                    imagen = $("img").attr("src");
+                    $("input").attr("type", "text").val("Dune");
+                }
+            });
+            //Asi mismo podemos acceder a los estilos de un elemento con .css(key, value)
+            //Tambien podemos usar sintaxis JSON para indicar varios estilos
+            $("img").mouseover(function() {
+                $(this).css("height", "300");
+                $("img").css({"border": "4px solid black", "border-style": "inset"});
+            });
+            $("img").mouseout(function() {
+                $(this).css("height", "100");
+                $("img").css("border", "none");
+            });
+            //Se utiliza el atributo addClass o removeClass para añadir o quitar clases
+            $("button").addClass("boton");
+            //Para obtener/cambiar el valor/texto de un elemento utilizamos .text() salvo para inputs y text areas que usaremos .val()
+            $("button").text("Next");
+        });
+    </script>
+</html>

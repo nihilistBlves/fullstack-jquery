@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluacion de numeros</title>
+</head>
+<body>
+    <h1>Evaluacion de numeros</h1>
+    <label for="">Numero 1</label>
+    <input type="number" name="uno">
+    <br>
+    <label for="">Numero 2</label>
+    <input type="number" name="dos">
+    <br>
+    <label for="">Numero 3</label>
+    <input type="number" name="tres">
+    <br>
+    <button id="botonOrdenar">Ordenar</button>
+</body>
+    <script src="jquery-3.6.0.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#botonOrdenar").click(function() {
+                var numUno = parseInt($("input[name='uno']").val());
+                var numDos = parseInt($("input[name='dos']").val());
+                var numTres = parseInt($("input[name='tres']").val());
+                var array = [numUno, numDos, numTres];
+                if ((numUno < numDos) && (numUno < numTres)) {
+                    array[0] = numUno;
+                    if (numDos < numTres) {
+                        array[1] = numDos;
+                        array[2] = numTres;
+                    } else {
+                        array[1] = numTres;
+                        array[2] = numDos;
+                    }
+                } else if ((numUno < numDos) && (numUno > numTres)) {
+                    array[0] = numTres;
+                    array[1] = numUno;
+                    array[2] = numDos;
+                } else if ((numUno > numDos) && (numUno < numTres)) {
+                    array[0] = numDos;
+                    array[1] = numUno;
+                    array[2] = numTres;
+                } else if ((numUno > numDos) && (numUno > numTres)) {
+                    array[2] = numUno;
+                    if (numDos < numTres) {
+                        array[0] = numDos;
+                        array[1] = numTres;
+                    } else {
+                        array[0] = numTres;
+                        array[1] = numDos;
+                    }
+                }
+                $("input[name='uno']").val(array[0]);
+                $("input[name='dos']").val(array[1]);
+                $("input[name='tres']").val(array[2]);
+            });
+        });
+    </script>
+</html>

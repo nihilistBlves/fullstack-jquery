@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Introduzca su fecha de nacimiento</h1>
+    <label for="">Dia</label>
+    <input type="number" name="dia" id="dia">
+    <br>
+    <label for="">Mes</label>
+    <input type="number" name="mes" id="mes">
+    <br>
+    <label for="">Año</label>
+    <input type="number" name="año" id="año">
+    <br>
+    <button id="botonCalcular">Calcular dia de la semana</button>
+    <div id="div"></div>
+</body>
+    <script src="jquery-3.6.0.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#botonCalcular").click(function() {
+                var dia = parseInt($("input[name='dia']").val());
+                var mes = parseInt($("input[name='mes']").val());
+                var año = parseInt($("input[name='año']").val());
+
+                if (mes == 1) {
+                    mes = 13;
+                    año = año - 1;
+                } else if (mes == 2) {
+                    mes = 14;
+                    año = año - 1;
+                }
+                var pasoUno = ((mes + 1) * 3) / 5;
+                var pasoDos = año / 4;
+                var pasoTres = año / 100;
+                var pasoCuatro = año / 400;
+                var pasoCinco = dia + (mes * 2) + año + pasoUno + pasoDos - pasoTres + pasoCuatro + 2;
+                var pasoSeis = pasoCinco / 7;
+                //parsear para truncar el numero decimal
+                var pasoSiete = parseInt(pasoCinco) - (parseInt(pasoSeis) * 7);
+                console.log(parseInt(pasoCinco) - (parseInt(pasoSeis) * 7));
+                var diaSemana = "";
+                switch (pasoSiete) {
+                    case 0:
+                        diaSemana = "Sabado";
+                        break;
+                    case 1:
+                        diaSemana = "Domingo";
+                        break;
+                    case 2:
+                        diaSemana = "Lunes";
+                        break;
+                    case 3:
+                        diaSemana = "Martes";
+                        break;
+                    case 4:
+                        diaSemana = "Miercoles";
+                        break;
+                    case 5:
+                        diaSemana = "Jueves";
+                        break;
+                    case 6:
+                        diaSemana = "Viernes";
+                        break;
+                }
+                $("#div").html("<h1>Dia de la semana: "+diaSemana+"</h1>");
+            });
+        });
+    </script>
+</html>

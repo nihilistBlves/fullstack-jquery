@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Generar controles dinámicamente</h1>
+    <label for="">Introduzca un texto:</label>
+    <input type="text" name="cajaTexto" id="cajaTexto">
+    <button id="botonCrear">Crear título</button>
+    <div id="padre"></div>
+</body>
+    <script src="jquery-3.6.0.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("h1").click(function() {
+                $(this).text("-Evento activado-");
+            });
+            $("#botonCrear").click(function() {
+                //Crear con atributos a parte
+                var elemento = $("<h1>");
+                var texto = $("#cajaTexto").val();
+                elemento.text(texto);
+                elemento.css("color", "red");
+                $("#padre").append(elemento);
+                //Crear con atributos con JSON
+                var h1 = $("<h1>", {
+                    "text": texto,
+                    "style": "color:blue"
+                });
+                elemento.click(function() {
+                    $(this).text("-Evento activado-");
+                });
+                h1.click(function() {
+                    var texto = $("#cajaTexto").val();
+                    alert(texto);
+                });
+                h1.appendTo($("#padre"));
+            });
+        });
+    </script>
+</html>

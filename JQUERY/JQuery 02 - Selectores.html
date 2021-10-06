@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .rojo {
+            color: red;
+        }
+        #idUnico {
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <h1>TITULO 1</h1>
+    <h2 class="rojo">TITULO 2</h2>
+    <h3 id="idUnico">TITULO 3</h1>
+    <h1>TITULO 4</h1>
+    <button>OCULTAR ELEMENTOS</button>
+</body>
+    <script src="jquery-3.6.0.js"></script>
+    <script>
+        $(document).ready(function() {
+            //SELECTORES DE ETIQUETA
+            $("h1").css("color", "green");
+            //EVENTO/LISTENER
+            $("button").click(function() { 
+                $("h1").hide();  //hide() es una accion
+                //SELECTOR DE CLASE
+                $(".rojo").hide();
+                //SELECTOR DE ID
+                $("#idUnico").hide();
+            });
+            //SELECTOR THIS
+            $("h1").click(function() { 
+                $(this).fadeOut(1000);
+                $(this).fadeIn(1000);
+            });
+        });
+    </script>
+</html>

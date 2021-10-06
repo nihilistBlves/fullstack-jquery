@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 5px;
+        }
+        span {
+            color: white;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ejemplo Contenido/Valor</h1>
+    <label>Número 1</label>
+    <input type="number" id="caja1">
+    <br>
+    <label>Número 2</label>
+    <input type="number" id="caja2">
+    <br>
+    <button id="botonSumar">+</button> 
+    <br>
+    <label for="">Resultado</label>
+    <span id="resultado"></span>
+</body>
+    <script src="jquery-3.6.0.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#botonSumar").click(function () {
+                var numeroUno = parseInt($("#caja1").val());
+                var numeroDos = parseInt($("#caja2").val());
+                $("#caja1").val("")
+                $("#caja2").val("");
+                var resultado = numeroUno+numeroDos;
+                $("#resultado").text(resultado);
+                if (resultado < 0) {
+                    $("#resultado").css("background-color", "red");
+                } else {
+                    $("#resultado").css("background-color", "green");
+                }
+            });
+        });
+    </script>
+</html>
