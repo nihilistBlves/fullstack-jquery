@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Practica EACH y CHECKED</h1>
+    <button type="button" id="botonGenerar">Generar números</button>
+    <button type="button" id="botonSumar">Sumar chequeados</button>
+    <hr>
+    <input type="checkbox">
+    <input type="checkbox">
+    <input type="checkbox">
+    <input type="checkbox">
+    <input type="checkbox">
+    <h1 id="resultado"></h1>
+</body>
+    <script src="jquery-3.6.0.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#botonGenerar").click(function() {
+                $("input[type='checkbox']").each(function() {
+                    var random = parseInt((Math.random() * 100) + 1); //Math.random() devuelve un Double de 0 a 1 pero nunca estos mismos. Por eso se multiplica por 100 para indicar el maximo y +1 para que sea superior a 0
+                    $(this).val(random);
+                    var label = $("<label>");
+                    label.text(random);
+                    label.insertBefore($(this));
+                });
+            });
+            $("#botonSumar").click(function(){
+                var suma = 0;
+                $("input[type='checkbox'").each(function() {
+                    if ($(this).is(":checked")) {
+                        suma += parseInt($(this).val());
+                    }
+                });
+                $("#resultado").text("");
+                $("#resultado").text("Resultado: "+ suma);
+            });
+        });
+    </script>
+</html>

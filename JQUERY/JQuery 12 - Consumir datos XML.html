@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Lectura XML simple</h1>
+    <button type="button" id="botonLeer">Cargar datos Empleados</button>
+    <ul id="contenedor"></ul>
+</body>
+    <script src="jquery-3.6.0.js"></script>
+    <script>
+        $(document).ready(function() {
+            $.get("resources/files/empleados.xml", function(data) {
+                $("#botonLeer").click(function() {
+                    $(data).find("APELLIDO").each(function() {
+                        var li = $("<li>", {"text": $(this).text()})
+                        $("#contenedor").append(li);
+                    });
+                });
+            });
+        });
+    </script>
+</html>

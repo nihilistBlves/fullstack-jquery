@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        div * {
+            margin: 5px;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Seleccione un rango</h1>
+    <input type="range" name="rango" id="rango" value="1" min="1" max="10">
+    <div id="botones"></div>
+    <div id="imagenes"></div>
+</body>
+<script src="jquery-3.6.0.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#rango").change(function () {
+            var cantidad = parseInt($("#rango").val());
+            $("#botones").text("");
+            $("#imagenes").text("");
+            for (var i = 0; i < cantidad; i++) {
+                var boton = $("<button>", {
+                    "text": "Imagen " + (i + 1),
+                    "data-id": (i + 1)
+                });
+                boton.click(function () {
+                    var imagenAsociada = $(this).data("id");
+                    var botonPresionado = $(this);
+                    $("img").each(function () {
+                        if ($(this).data("id") == imagenAsociada) {
+                            if ($(this).attr("src") == "resources/images/imagen1.jpg") {
+                                $(this).attr("src", "resources/images/imagen2.jpg");
+                            } else {
+                                $(this).attr("src", "resources/images/imagen1.jpg");
+                            }
+                        }
+                    });
+                });
+                $("#botones").append(boton);
+                var imagen = $("<img>", {
+                    "src": "resources/images/imagen1.jpg",
+                    "height": "100",
+                    "data-id": (i + 1)
+                });
+                $("#imagenes").append(imagen);
+            }
+        });
+    });
+</script>
+
+</html>
