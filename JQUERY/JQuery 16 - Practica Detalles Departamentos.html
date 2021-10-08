@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Practica detalles de departamentos</h1>
+    <div id="botones"></div>
+    <hr>
+    <div id="contenedor"></div>
+</body>
+    <script src="jquery-3.6.0.js"></script>
+    <script>
+        $(document).ready(function() {
+            $.get("resources/files/departamentosetiquetas.xml", function(data){
+                $(data).find("DEPARTAMENTO").each(function() {
+                    var boton = $("<button>", {
+                        "text": "Departamento " + $(this).find("NUMERO").text(),
+                        "type": "button",
+                        "data-departamento": $(this).find("NUMERO").text()
+                    });
+                    boton.click(function() {
+                        $("#contenedor").text("");
+                        $.get("resources/files/departamentosetiquetas.xml", function(data) {
+                            var html = "<h1>Departamento " + $(this).find("NUMERO").text() + "</h1>" + 
+                            "<h3>Nombre: " + $(this).find("NOMBRE").text() + "</h3>" +
+                            "<h4>Localidad: " + $(this).find("LOCALIDAD").text() + "</h4>";
+                        });    
+                        $("#contenedor").append(html);
+                    });
+                    $("#botones").append(boton);
+                });
+            });
+        });
+    </script>
+</html>

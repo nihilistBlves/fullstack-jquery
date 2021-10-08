@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Busqueda por atributo</h1>
+    <label for="">Buscar empleado</label>
+    <input type="text" name="cajaEmpleado" id="cajaEmpleado">
+    <label for="">Buscar hospital</label>
+    <input type="text" name="cajaHospital" id="cajaHospital">
+    <hr>
+    <div id="resultado"></div>
+</body>
+<script src="jquery-3.6.0.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#cajaEmpleado").keyup(function () {
+            var busqueda = $("#cajaEmpleado").val();
+            $("#resultado").text("");
+            $.get("resources/files/empleados.xml", function (data) {
+                $(data).find("APELLIDO:contains(" + busqueda + ")").each(function () {
+                    $("#resultado").append("<h3>" + $(this).text() + "</h3>");
+                });
+            });
+        });
+        $("#cajaHospital").keyup(function () {
+            var busqueda = $("#cajaHospital").val();
+            $("#resultado").text("");
+            $.get("resources/files/hospital_atributos.xml", function (data) {
+                console.log($(data).find("HOSPITAL[HOSPITAL_COD=" + busqueda + "]").first().attr("NOMBRE"));
+                if ($(data).find("HOSPITAL[HOSPITAL_COD=" + busqueda + "]").length != 0) {
+                    $("#resultado").append("<h1>" + $(data).find("HOSPITAL[HOSPITAL_COD=" + busqueda + "]").first().attr("NOMBRE") + "</h3>");
+                }
+            });
+        });
+    });
+</script>
+
+</html>
