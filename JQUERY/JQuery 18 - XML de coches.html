@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+</head>
+
+<body class="text-center">
+    <h1>SELECCIONE UN COCHE</h1>
+    <select id="selectCoches" class="form-select">
+        <option>Haga click para seleccionar</option>
+    </select>
+    <hr>
+    <div class="container">
+        <div class="row">
+            <div class="col-3" id="contenedor">
+
+            </div>
+        </div>
+    </div>
+
+    <script src="jquery-3.6.0.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.get("/resources/files/coches.xml", function (data) {
+                $(data).find("coche").each(function () {
+                    var option = $("<option>", {
+                        "text": $(this).find("modelo").text(),
+                        "data-id": $(this).find("idcoche").text()
+                    });
+                    $("#selectCoches").append(option);
+                });
+            });
+            $("#selectCoches").change(function () {
+                var idCoche = $(this).find("option:selected").attr("data-id");
+                console.log(idCoche);
+                $.get("/resources/files/coches.xml", function (data) {
+                    $(data).find("coche").each(function () {
+                        if ($(this).find("idcoche").text() == idCoche) {
+                            var html = "<div class='card' style='width: 18rem;'><img class='card-img-top' src='"+$(this).find("imagen").text()+"'/><div class='card-body'> <h5 class='card-title'>"+$(this).find("marca").text()+"</h5><p class='card-text'>"+$(this).find("modelo").text()+"</p></div></div>";
+                            $("#contenedor").html(html);
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

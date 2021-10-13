@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+</head>
+<body>
+    <h1>Jugadores de la Liga Española de Futbol</h1>
+    <select id="select" class="form-select">
+        <option>Haga click para seleccionar</option>
+    </select>
+    <hr>
+    <div class="container">
+        <div class="row">
+            <div class="col-3" id="contenedor">
+
+            </div>
+        </div>
+    </div>
+
+    <script src="jquery-3.6.0.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax(
+                {
+                    "url": "resources/files/jugadores.json",
+                    "method": "GET",
+                    "dataType": "json",
+                    "success": function(data) {
+                        $.each(data.jugadores, function(index, jugador) {
+                            var option = $("<option>", {
+                                "text": jugador.numero + ". " + jugador.nombre,
+                                "value": index
+                            })
+                            $("#select").append(option);      
+                        });
+                    },
+                    "error": function(error) {
+                        $("h1").text("ERROR");
+                    }
+                 }
+            );
+            $("#select").click(function() {
+                $("#contenedor").text("");
+                var selected = $(this).find("option:selected").val();
+                $.ajax(
+                {
+                    "url": "resources/files/jugadores.json",
+                    "method": "GET",
+                    "dataType": "json",
+                    "success": function(data) {
+                        $.each(data.jugadores, function(index, jugador) {
+                            if (index == selected) {
+                                var html = "<div class='card' style='width: 18rem;'><img class='card-img-top' src='"+jugador.imagen+"'/><div class='card-body'> <h5 class='card-title'>"+jugador.numero+". "+jugador.nombre+" ("+jugador.edad+")"+"</h5><p class='card-text'>"+jugador.posicion+"</p></div></div>";
+                                $("#contenedor").append(html);
+                            }
+                        });
+                    },
+                    "error": function(error) {
+                        $("h1").text("ERROR");
+                    }
+                 }
+            );
+            });
+        });
+    </script>
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

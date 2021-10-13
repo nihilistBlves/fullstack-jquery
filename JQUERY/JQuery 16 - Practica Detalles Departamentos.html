@@ -5,11 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        button {
-            margin: 5px;
-        }
-    </style>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+    <script src="bootstrap/js/bootstrap.js"></script>
 </head>
 <body>
     <h1>Practica detalles de departamentos</h1>
@@ -28,13 +25,17 @@
                         "data-departamento": $(this).find("NUMERO").text()
                     });
                     boton.click(function() {
+                        var botonData = $(this).attr("data-departamento");
                         $("#contenedor").text("");
                         $.get("resources/files/departamentosetiquetas.xml", function(data) {
-                            var html = "<h1>Departamento " + $(this).find("NUMERO").text() + "</h1>" + 
-                            "<h3>Nombre: " + $(this).find("NOMBRE").text() + "</h3>" +
-                            "<h4>Localidad: " + $(this).find("LOCALIDAD").text() + "</h4>";
+                            $(data).find("DEPARTAMENTO").each(function() {
+                                if ($(this).find("NUMERO").text() == botonData) {
+                                    $("#contenedor").html("<h1>Departamento " + $(this).find("NUMERO").text() + "</h1>" + 
+                                    "<h3>Nombre: " + $(this).find("NOMBRE").text() + "</h3>" +
+                                    "<h4>Localidad: " + $(this).find("LOCALIDAD").text() + "</h4>");
+                                }
+                            });
                         });    
-                        $("#contenedor").append(html);
                     });
                     $("#botones").append(boton);
                 });
