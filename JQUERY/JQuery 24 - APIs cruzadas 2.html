@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row m-1">
+            <h1 class="h1">Maestro detalle Servicios Api JQuery</h1>
+            <div id="banner"></div>
+        </div>
+        <div class="row m-1">
+            <div class="col-3">
+                <label for="cajaSalario">Introduzca un salario</label>
+                <input type="text" class="form-control" name="cajaSalario" id="cajaSalario">
+            </div>
+            <div class="col-3 mt-4">
+                <button type="button" class="btn btn-success" id="botonBuscar">Buscar</button>
+            </div>
+        </div>
+        <div class="row m-1">
+            <div class="col">
+                <table class="table table-hover" id="tablaDepartamentos">
+                    <thead>
+                        <tr>
+                            <th>Apellido</th>
+                            <th>Oficio</th>
+                            <th>Salario</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row m-1">
+            <div class="col" id="detalles">
+            </div>
+        </div>
+    </div>
+
+    <script src="jquery-3.6.0.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <script>
+        var urlApi = "https://apiempleadosspgs.azurewebsites.net";
+        $(document).ready(function() {
+            $("#botonBuscar").click(function() {
+                var salario = $("#cajaSalario").val();
+                buscarEmpleadosPorSalario(salario);
+            });
+        });
+
+        function buscarEmpleadosPorSalario(salario) {
+            var request = "/api/Empleados/EmpleadosSalario/"+salario;
+            $.ajax({
+                "url": urlApi + request,
+                "method": "GET",
+                "dataType": "json",
+                "success": function(data) {
+                    var tr = "";
+                    $.each(data, function(index, empl) {
+                        tr = $("<tr>");
+                        var td1 = $("<td>", {
+                            "text": empl.apellido
+                        });
+                        var td2 = $("<td>", {
+                            "text": empl.oficio
+                        });
+                        var td3 = $("<td>", {
+                            "text": empl.salario
+                        });
+                        tr.click(function() {
+                            $("#detalles").text("");
+                            $.ajax({
+                                "url": "https://apiempleadosspgs.azurewebsites.net/api/Empleados/" + empl.idEmpleado,
+                                "method": "GET",
+                                "dataType": "json",
+                                "success": function(data) {
+                                    var table = $("<table>", {"class": "table table-striped"});
+                                    var tbody = $("<tbody>");;
+                                    $.each(data, function(key, value) {
+                                        var tr = $("<tr>");
+                                        var th = $("<th>", {"text": key});
+                                        var td = $("<td>", {"text": value});
+                                        tr.append(th, td);
+                                        tbody.append(tr);
+                                    });
+                                    table.append(tbody);
+                                    $("#detalles").append(table);
+
+                                }
+                            });
+                        });
+                        tr.append(td1);
+                        tr.append(td2);
+                        tr.append(td3);
+                        
+                        $("#tablaDepartamentos tbody").append(tr);
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>
