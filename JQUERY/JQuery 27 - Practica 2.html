@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row m-1">
+            <h1 class="h1">Práctica CRUD con JQuery (Empleados)</h1>
+            <div class="col-5" id="banner"></div>
+        </div>
+        <div class="row m-1">
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <label class="form-text" for="selectOficios">Oficios:</label>
+                        <select class="form-select" name="selectOficios" id="selectOficios"></select>
+                    </div>
+                    <div class="col mt-4">
+                        <button class="btn btn-primary form-control" id="botonMostrar">Mostrar empleados</button>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col">
+                        <label class="form-text" for="cajaIncremento">Incremento salarial:</label>
+                        <input type="number" class="form-control" name="cajaIncremento" id="cajaIncremento">
+                    </div>
+                    <div class="col mt-4">
+                        <button class="btn btn-success form-control" id="botonIncrementar">Incrementar salario</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row m-4">
+            <div class="col">
+                <table class="table table-hover" id="tablaEmpleados">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Apellido</th>
+                            <th>Oficio</th>
+                            <th>Salario</th>
+                            <th>Director</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="jquery-3.6.0.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <script>
+        var urlApi = "https://apiempleadosaction.azurewebsites.net";
+        $(document).ready(function () {
+            cargarOficios();
+            $("#botonMostrar").click(function () {
+                cargarEmpleadosPorOficio();
+            });
+
+            $("#botonIncrementar").click(function () {
+                $("#tablaEmpleados tbody").empty();
+                var optionValue = $("#selectOficios option:selected").val();
+                var incrementoValue = parseInt($("#cajaIncremento").val());
+                var request = "/api/empleados/incrementarsalariooficios/" + optionValue + "/" + incrementoValue;
+                $.ajax({
+                    "url": urlApi + request,
+                    "method": "PUT",
+                    "success": function () {
+                        $("#cajaIncremento").val("");
+                        cargarEmpleadosPorOficio();
+                    }
+                });
+            });
+        });
+
+        function cargarOficios() {
+            $("#selectOficios").empty();
+            var request = "/api/empleados/getoficios/oficios";
+            $.ajax({
+                "url": urlApi + request,
+                "method": "GET",
+                "dataType": "json",
+                "success": function (data) {
+                    $.each(data, function (key, value) {
+                        var option = $("<option>", { "text": value, "value": value });
+                        $("#selectOficios").append(option);
+                    });
+                },
+                "error": function () {
+                    $("#banner").text(alerta("Error al cargar los oficios", "danger"));
+                }
+            });
+        }
+
+        function cargarEmpleadosPorOficio() {
+            $("#tablaEmpleados tbody").empty();
+            var optionValue = $("#selectOficios option:selected").val();
+            var request = "/api/empleados/getempleadosoficio/empleadosoficio/" + optionValue;
+            $.ajax({
+                "url": urlApi + request,
+                "method": "GET",
+                "dataType": "json",
+                "success": function (data) {
+                    $.each(data, function (index, empleado) {
+                        var tr = $("<tr>");
+                        var id = $("<td>", { "text": empleado.idEmpleado });
+                        var apellido = $("<td>", { "text": empleado.apellido });
+                        var oficio = $("<td>", { "text": empleado.oficio });
+                        var salario = $("<td>", { "text": empleado.salario + " €" });
+                        var director = $("<td>", { "text": empleado.director });
+                        tr.append(id, apellido, oficio, salario, director);
+                        $("#tablaEmpleados tbody").append(tr);
+                    });
+                }
+            });
+        }
+
+        function limpiarCajas() {
+            $("#cajaId").val("");
+            $("#cajaNombre").val("");
+            $("#cajaDireccion").val("");
+            $("#cajaTelefono").val("");
+            $("#cajaCamas").val("");
+        }
+
+        function alerta(texto, tipo) {
+            var div = "<div class='alert alert-" + tipo + " alert-dismissible fade show' role='alert'>" + texto + " <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>";
+            return div;
+        }
+    </script>
+</body>
+
+</html>

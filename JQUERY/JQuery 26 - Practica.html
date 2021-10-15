@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row m-1">
+            <h1 class="h1">Práctica CRUD con JQuery (Hospitales)</h1>
+            <div class="col-5" id="banner"></div>
+        </div>
+        <div class="row m-1">
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-3">
+                        <label class="form-text" for="">ID:</label>
+                        <input type="number" class="form-control" name="cajaId" id="cajaId">
+                    </div>
+                    <div class="col-8">
+                        <label class="form-text" for="">Nombre:</label>
+                        <input type="text" class="form-control" name="cajaNombre" id="cajaNombre">
+                    </div>
+                    <div class="col-4">
+                        <label class="form-text" for="">Dirección:</label>
+                        <input type="text" class="form-control" name="cajaDireccion" id="cajaDireccion">
+                    </div>
+                    <div class="col-4">
+                        <label class="form-text" for="">Teléfono:</label>
+                        <input type="text" class="form-control" name="cajaTelefono" id="cajaTelefono">
+                    </div>
+                    <div class="col-3">
+                        <label class="form-text" for="">Camas:</label>
+                        <input type="number" class="form-control" name="cajaCamas" id="cajaCamas">
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="col-2 mt-4">
+                    <button class="btn btn-success" id="botonInsertar" type="button">Insertar</button>
+                </div>
+                <div class="col-2 mt-4">
+                    <button class="btn btn-primary" id="botonModificar" type="button">Modificar</button>
+                </div>
+            </div>
+        </div>
+        <div class="row m-1">
+            <div class="col">
+                <table class="table table-hover" id="tablaHospitales">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Dirección</th>
+                            <th>Teléfono</th>
+                            <th>Nº Camas</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="jquery-3.6.0.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <script>
+        var urlApi = "https://apicrudhospital.azurewebsites.net";
+        $(document).ready(function() {
+            cargarHospitales();
+            $("#botonInsertar").click(function() {
+                var requestPost = "/webresources/hospitales/post";
+                var id = parseInt($("#cajaId").val());
+                var nombre = $("#cajaNombre").val();
+                var direccion = $("#cajaDireccion").val();
+                var telefono = $("#cajaTelefono").val();
+                var camas = parseInt($("#cajaCamas").val());
+                var hospital = new Object();
+                hospital.idhospital = id;
+                hospital.nombre = nombre;
+                hospital.direccion = direccion;
+                hospital.telefono = telefono;
+                hospital.camas = camas;
+                var json = JSON.stringify(hospital);
+                $.ajax({
+                    "url": urlApi + requestPost,
+                    "method": "POST",
+                    "data": json,
+                    "contentType": "application/json",
+                    "success": function() {
+                        cargarHospitales();
+                        $("#banner").html(alerta("Objeto insertado correctamente", "success"));
+                        limpiarCajas();
+                    },
+                    "error": function() {
+                        $("#banner").html(alerta("Error: no se ha podido insertar el objeto correctamente", "danger"));
+                    }
+                })
+            });
+            $("#botonModificar").click(function() {
+                var requestPut = "/webresources/hospitales/put";
+                var id = parseInt($("#cajaId").val());
+                var nombre = $("#cajaNombre").val();
+                var direccion = $("#cajaDireccion").val();
+                var telefono = $("#cajaTelefono").val();
+                var camas = parseInt($("#cajaCamas").val());
+                var hospital = new Object();
+                hospital.idhospital = id;
+                hospital.nombre = nombre;
+                hospital.direccion = direccion;
+                hospital.telefono = telefono;
+                hospital.camas = camas;
+                var json = JSON.stringify(hospital);
+                $.ajax({
+                    "url": urlApi + requestPut,
+                    "method": "PUT",
+                    "data": json,
+                    "contentType": "application/json",
+                    "success": function() {
+                        cargarHospitales();
+                        $("#banner").html(alerta("Objeto modificado correctamente", "success"));
+                        limpiarCajas();
+                    },
+                    "error": function() {
+                        $("#banner").html(alerta("Error: no se ha podido modificar el objeto correctamente", "danger"));
+                    }
+                })
+            });
+        });
+
+        function cargarHospitales() {
+            $("#tablaHospitales tbody").empty();
+            var requestGet = "/webresources/hospitales";
+            var requestDelete = "/webresources/hospitales/delete/";
+            $.ajax({
+                "url": urlApi+requestGet,
+                "method": "GET",
+                "dataType": "json",
+                "success": function(data) {
+                    $.each(data, function(index, hospital) {
+                        var tr = $("<tr>", {"style": "cursor:pointer"});
+                        var id = $("<td>", {"text": hospital.idhospital});
+                        var nombre = $("<td>", {"text": hospital.nombre});
+                        var direccion = $("<td>", {"text": hospital.direccion});
+                        var telefono = $("<td>", {"text": hospital.telefono});
+                        var camas = $("<td>", {"text": hospital.camas});
+                        var accion = $("<td>");
+                        var botonEliminar = $("<button>", {"text": "X", "class": "btn btn-outline-danger"});
+                        botonEliminar.click(function() {
+                            $.ajax({
+                                "url": urlApi+requestDelete+id.text(),
+                                "method": "DELETE",
+                                "success": function() {
+                                    cargarHospitales();
+                                    $("#banner").html(alerta("Objeto eliminado correctamente", "success"));
+                                    limpiarCajas();                                
+                                },
+                                "error": function() {
+                                    $("#banner").html(alerta("Error: no se ha podido eliminar el objeto correctamente", "danger"));
+                                }
+                            });
+                        });
+                        accion.append(botonEliminar);
+                        tr.append(id, nombre, direccion, telefono, camas, accion);
+                        tr.click(function() {
+                            $("#cajaId").val(hospital.idhospital);
+                            $("#cajaNombre").val(hospital.nombre);
+                            $("#cajaDireccion").val(hospital.direccion);
+                            $("#cajaTelefono").val(hospital.telefono);
+                            $("#cajaCamas").val(hospital.camas);
+                        });
+                        $("#tablaHospitales tbody").append(tr);
+                    });
+                },
+                "error": function() {
+                    console.log("error");
+                }
+            });
+        }
+
+        function limpiarCajas() {
+            $("#cajaId").val("");
+            $("#cajaNombre").val("");
+            $("#cajaDireccion").val("");
+            $("#cajaTelefono").val("");
+            $("#cajaCamas").val("");
+        }
+
+        function alerta(texto, tipo) {
+            var div = "<div class='alert alert-" + tipo + " alert-dismissible fade show' role='alert'>" + texto + " <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>";
+            return div;
+        }
+    </script>
+</body>
+</html>

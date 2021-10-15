@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row m-1">
+            <h1 class="h1">Ejemplo CRUD con JQuery</h1>
+            <div id="banner"></div>
+        </div>
+        <div class="row m-1">
+            <div class="col-3 m-1">
+                <label class="form-text" for="">Número:</label>
+                <input type="text" class="form-control" name="cajaNumero" id="cajaNumero">
+            </div>
+            <div class="col-3 m-1">
+                <label class="form-text" for="">Nombre:</label>
+                <input type="text" class="form-control" name="cajaNombre" id="cajaNombre">
+            </div>
+            <div class="col-3 m-1">
+                <label class="form-text" for="">Localidad:</label>
+                <input type="text" class="form-control" name="cajaLocalidad" id="cajaLocalidad">
+            </div>
+        </div>
+        <div class="row m-1">
+            <div class="col-3 m-1">
+                <button class="btn btn-success" id="botonInsertar" type="button">Insertar departamento</button>
+            </div>
+            <div class="col-3 m-1">
+                <button class="btn btn-primary" id="botonModificar" type="button">Modificar departamento</button>
+            </div>
+            <div class="col-3 m-1">
+                <button class="btn btn-danger" id="botonEliminar" type="button">Eliminar departamento</button>
+            </div>
+        </div>
+        <div class="row m-1">
+            <div class="col">
+                <table class="table table-stripped" id="tablaDepartamentos">
+                    <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Nombre</th>
+                            <th>Localidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="jquery-3.6.0.js"></script>
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    <script>
+        var urlApi = "https://apicruddepartamentosxml.azurewebsites.net";
+        $(document).ready(function() {
+            cargarDepartamentos();
+            $("#botonInsertar").click(function() {
+                var request = "/api/departamentos";
+                $.ajax({
+                    "url": urlApi+request,
+                    "method": "POST",
+                    "contentType": "application/xml",
+                    "data": getDepartamentoXML(),
+                    "success": function() {
+                        $("#banner").html("<h3 style='color:green;'>Objeto insertado</h3>");
+                        limpiarCajas();
+                        cargarDepartamentos();
+                    },
+                    "error": function(request, status, error) {
+                        $("#banner").html("<h3 style='color:red;'>"+request.responseText+"</h3>");
+                    }
+                });
+            });
+            $("#botonModificar").click(function() {
+                var request = "/api/departamentos";
+                $.ajax({
+                    "url": urlApi+request,
+                    "method": "PUT",
+                    "contentType": "application/xml",
+                    "data": getDepartamentoXML(),
+                    "success": function() {
+                        $("#banner").html("<h3 style='color:green;'>Objeto modificado</h3>");
+                        limpiarCajas();
+                        cargarDepartamentos();
+                    },
+                    "error": function(request, status, error) {
+                        $("#banner").html("<h3 style='color:red;'>"+request.responseText+"</h3>");
+                    }
+                });
+            });
+            $("#botonEliminar").click(function() {
+                var num = $("#cajaNumero").val();
+                var request = "/api/departamentos/"+num;
+                $.ajax({
+                    "url": urlApi+request,
+                    "method": "DELETE",
+                    "success": function() {
+                        $("#banner").html("<h3 style='color:green;'>Objeto eliminado</h3>");
+                        limpiarCajas();
+                        cargarDepartamentos();
+                    },
+                    "error": function(request, status, error) {
+                        $("#banner").html("<h3 style='color:red;'>"+request.responseText+"</h3>");
+                    }
+                });
+            });
+        });
+
+        function cargarDepartamentos() {
+            var request = "/api/departamentos";
+            $("#tablaDepartamentos tbody").empty();
+            $.get(urlApi+request, function(data) {
+                $(data).find("Departamento").each(function() {
+                    var tr = $("<tr>");
+                    var td1 = $("<td>", {"text": $(this).find("IdDepartamento").text()});
+                    var td2 = $("<td>", {"text": $(this).find("Nombre").text()});
+                    var td3 = $("<td>", {"text": $(this).find("Localidad").text()});
+                    tr.append(td1,td2,td3);
+                    $("#tablaDepartamentos tbody").append(tr);
+                });
+            });
+            $.ajax({
+
+            });
+        }
+
+        function getDepartamentoXML() {
+            var num = $("#cajaNumero").val();
+            var nom = $("#cajaNombre").val();
+            var loc = $("#cajaLocalidad").val();
+            var xml = "<Departamento><IdDepartamento>"+num+"</IdDepartamento><Nombre>"+nom+"</Nombre><Localidad>"+loc+"</Localidad></Departamento>";
+            return xml;
+        }
+
+        function limpiarCajas() {
+            $("#cajaNumero").val("");
+            $("#cajaNombre").val("");
+            $("#cajaLocalidad").val("");
+        }
+    </script>
+</body>
+</html>
