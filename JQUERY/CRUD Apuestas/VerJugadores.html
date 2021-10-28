@@ -26,16 +26,40 @@
         $(document).ready(function() {
             $("#menu").load("./Menu.html");
             cargarHrefs();
-            cargarEquipo();
+            cargarJugadores();
         });
 
-        function cargarEquipo() {
+        function cargarJugadores() {
             $.ajax({
-                "url": url + "/api/equipos/" + idEquipo,
+                "url": url + "/api/Jugadores/JugadoresEquipo/" + idEquipo,
                 "method": "GET",
                 "dataType": "json",
                 "success": function(data) {
-                    $("#contenido").append("<div class='card text-center'><div class='card-header'>"+data.nombre+"</div><img src="+data.imagen+" style='height:200px;width:200px' class='card-img-top mx-auto' /><div class='card-body'><h5 class='card-text'>Champions: "+data.champions+"</h5><a href="+data.paginaWeb+">Página web</a><p class='card-text'>"+data.descripcion+"</p><a href='./VerJugadores.html?idEquipo="+data.idEquipo+"' role='button' class='btn btn-success'>Ver jugadores</a></div></div>");
+                    var table = $("<table>", {"class":"table table-striped"});
+                    var thead = $("<thead>");
+                    var trHead = $("<tr>");
+                    var thNombre = $("<th>", {"text":"NOMBRE"});
+                    var thImagen = $("<th>", {"text":"IMAGEN"});
+                    var thDetalles = $("<th>", {"text":"DETALLES"});
+                    trHead.append(thNombre, thImagen, thDetalles);
+                    thead.append(trHead);
+                    table.append(thead);
+                    var tbody = $("<tbody>");
+                    $.each(data, function(key, jugador) {
+                        var tr = $("<tr>");
+                        var tdNombre = $("<td>", {"text":jugador.nombre});
+                        var tdImagen = $("<td>");
+                        var img = $("<img>", {"src":jugador.imagen, "height":"100px"})
+                        tdImagen.append(img);
+                        var tdDetalles = $("<td>");
+                        var buttonDetalles = $("<a>", {"class":"btn btn-success m-2", "role":"button", "href":"./VerJugador.html?id="+jugador.idJugador, "text":"Ver detalles"});
+                        tdDetalles.append(buttonDetalles);
+                        tr.append(tdNombre, tdImagen, tdDetalles);
+                        tbody.append(tr);
+                    });
+                    table.append(tbody);
+                    $("#contenido").append("<h1>Plantilla</h1>");
+                    $("#contenido").append(table);
                 }
             });
         }

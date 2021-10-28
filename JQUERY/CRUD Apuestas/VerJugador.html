@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equipo</title>
+    <title>Jugador</title>
     <link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
 </head>
 <body>
     <div class="container-fluid">
         <div id="menu"></div>
         <div class="row m-3 justify-content-center">
-            <div id="contenido" class="col-6">
+            <div id="contenido" class="col-6 text-center">
                 
             </div>
         </div>
@@ -21,28 +21,39 @@
     <script>
 
         var url = "https://apichampions.azurewebsites.net"
-        var idEquipo = obtenerParamIdEquipo();
+        var idJugador = obtenerParamIdJugador();
 
         $(document).ready(function() {
             $("#menu").load("./Menu.html");
             cargarHrefs();
-            cargarEquipo();
+            cargarJugadores();
         });
 
-        function cargarEquipo() {
+        function cargarJugadores() {
             $.ajax({
-                "url": url + "/api/equipos/" + idEquipo,
+                "url": url + "/api/Jugadores/" + idJugador,
                 "method": "GET",
                 "dataType": "json",
                 "success": function(data) {
-                    $("#contenido").append("<div class='card text-center'><div class='card-header'>"+data.nombre+"</div><img src="+data.imagen+" style='height:200px;width:200px' class='card-img-top mx-auto' /><div class='card-body'><h5 class='card-text'>Champions: "+data.champions+"</h5><a href="+data.paginaWeb+">Página web</a><p class='card-text'>"+data.descripcion+"</p><a href='./VerJugadores.html?idEquipo="+data.idEquipo+"' role='button' class='btn btn-success'>Ver jugadores</a></div></div>");
+                    var divCard = $("<div>", {"class":"card text-center"});
+                    var divCardHeader = $("<div>", {"class":"card-header", "text":data.nombre});
+                    var img = $("<img>", {"src":data.imagen, "class":"card-img-top mx-auto", "height":"200px", "width":"200px"});
+                    var divCardBody = $("<div>", {"class":"card-body"});
+                    var posicion = $("<h5>", {"class":"card-text", "text":"Posición: "+data.posicion});
+                    var fechaNacimiento = $("<h6>", {"class":"card-text", "text":"Fecha de nacimiento: "+data.fechaNacimiento});
+                    var pais = $("<h6>", {"class":"card-text", "text":"País: "+data.pais});
+                    var verJugadores = $("<a>", {"class":"btn btn-secondary m-2", "role":"button", "href":"./VerJugadores.html?idEquipo="+data.idEquipo, "text":"Volver"});
+                    divCardBody.append(posicion, fechaNacimiento, pais, verJugadores);
+                    divCard.append(divCardHeader, img, divCardBody);
+                    $("#contenido").append("<h1>Jugador</h1>")
+                    $("#contenido").append(divCard);
                 }
             });
         }
 
-        function obtenerParamIdEquipo() {
+        function obtenerParamIdJugador() {
             let searchParams = new URLSearchParams(window.location.search);
-            return parseInt(searchParams.get("idEquipo"));
+            return parseInt(searchParams.get("id"));
         }
 
         function cargarHrefs() {
