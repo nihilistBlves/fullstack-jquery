@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apuestas</title>
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div id="menu"></div>
+        <div class="row m-3 justify-content-center">
+            <div id="contenido" class="col-4 justify-content-center text-center">
+                <h1>Eliminar apuesta</h1>
+                <h3 style="color: darkred;">¿Está seguro de querer eliminar esta apuesta?</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>USUARIO</th>
+                            <th>RESULTADO</th>
+                            <th>FECHA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="usuario"></td>
+                            <td id="resultado"></td>
+                            <td id="fecha"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" id="botonEditar" class="btn btn-danger">Eliminar apuesta</button>
+                <button type="button" id="botonVolver" class="btn btn-secondary">Volver</button>
+            </div>
+        </div>
+    </div>
+    <script src="./jquery-3.6.0.js"></script>
+    <script src="./bootstrap/js/bootstrap.bundle.js"></script>
+    <script>
+
+        var url = "https://apichampions.azurewebsites.net"
+
+        $(document).ready(function() {
+            $("#menu").load("./Menu.html");
+            cargarHrefs();
+            cargarApuesta();
+            $("#botonEditar").click(function() {
+                var request = "/api/apuestas/" + obtenerParamsIdApuesta();
+                $.ajax({
+                    "url": url + request,
+                    "method": "DELETE",
+                    "success": function(data) {
+                        window.location.href = './VerApuestas.html';
+                    }
+                })
+            });
+            $("#botonVolver").click(function() {
+                window.location.href = './VerApuestas.html';
+            })
+        });
+
+        function cargarApuesta() {
+            $.ajax({
+                "url": url + "/api/apuestas/" + obtenerParamsIdApuesta(),
+                "method": "GET",
+                "dataType": "json",
+                "success": function(data) {
+                    $("#usuario").text(data.usuario);
+                    $("#resultado").text(data.resultado);
+                    $("#fecha").text(data.fecha);
+                }
+            });
+        }
+
+        function obtenerParamsIdApuesta() {
+            let searchParams = new URLSearchParams(window.location.search);
+            return parseInt(searchParams.get("id"));
+        }
+
+        function cargarHrefs() {
+            $.ajax({
+                "url": url + "/api/equipos",
+                "method": "GET",
+                "dataType": "json",
+                "success": function(data) {
+                    $.each(data, function(key, equipo) {
+                        var li = $("<li>");
+                        var a = $("<a>", {"class":"dropdown-item", "href":"./VerEquipo.html?idEquipo="+equipo.idEquipo, "text":equipo.nombre});
+                        li.append(a);
+                        $("#menuEquipos").append(a);
+                    })
+                }
+            })
+        }
+
+    </script>
+</body>
+</html>

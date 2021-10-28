@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apuestas</title>
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div id="menu"></div>
+        <div class="row m-3 justify-content-center">
+            <div id="contenido" class="col-4 justify-content-center text-center">
+                <h1>Crear apuesta</h1>
+                <form>
+                    <div class="mb-3">
+                        <label for="usuario" class="form-label">Usuario</label>
+                        <input type="text" required id="usuario" class="form-control text-center" placeholder="Introduzca el nombre de usuario">
+                    </div>
+                    <div class="mb-3">
+                        <label for="resultado" class="form-label">Resultado</label>
+                        <input type="text" required id="resultado" class="form-control text-center" placeholder="Introduzca el resultado en formato Local-Visitante">
+                    </div>
+                    <div class="mb-3">
+                        <label for="fecha" class="form-label">Fecha</label>
+                        <input type="text" required id="fecha" class="form-control text-center" placeholder="Introduzca la fecha en formato d/m/a">
+                    </div>
+                    <button type="button" id="botonEditar" class="btn btn-primary">Crear apuesta</button>
+                    <button type="button" id="botonVolver" class="btn btn-secondary">Volver</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="./jquery-3.6.0.js"></script>
+    <script src="./bootstrap/js/bootstrap.bundle.js"></script>
+    <script>
+
+        var url = "https://apichampions.azurewebsites.net"
+
+        $(document).ready(function() {
+            $("#menu").load("./Menu.html");
+            cargarHrefs();
+            $("#botonEditar").click(function() {
+                var request = "/api/apuestas";
+                var usuario = $("#usuario").val();
+                var resultado = $("#resultado").val();
+                var fecha = $("#fecha").val();
+                var apuesta = new Object();
+                apuesta.idApuesta = 1;
+                apuesta.usuario = usuario;
+                apuesta.resultado = resultado;
+                apuesta.fecha = fecha;
+                var data = JSON.stringify(apuesta);
+                $.ajax({
+                    "url": url + request,
+                    "method": "POST",
+                    "data": data,
+                    "contentType": "application/json",
+                    "success": function(data) {
+                        window.location.href = './VerApuestas.html';
+                    }
+                })
+            });
+            $("#botonVolver").click(function() {
+                window.location.href = './VerApuestas.html';
+            })
+        });
+
+        function cargarHrefs() {
+            $.ajax({
+                "url": url + "/api/equipos",
+                "method": "GET",
+                "dataType": "json",
+                "success": function(data) {
+                    $.each(data, function(key, equipo) {
+                        var li = $("<li>");
+                        var a = $("<a>", {"class":"dropdown-item", "href":"./VerEquipo.html?idEquipo="+equipo.idEquipo, "text":equipo.nombre});
+                        li.append(a);
+                        $("#menuEquipos").append(a);
+                    })
+                }
+            })
+        }
+
+    </script>
+</body>
+</html>
