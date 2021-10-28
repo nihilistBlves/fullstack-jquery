@@ -35,7 +35,7 @@
                 "method": "GET",
                 "dataType": "json",
                 "success": function(data) {
-                    console.log(data);
+                    $("#contenido").append("<div class='card text-center'><div class='card-header'>"+data.nombre+"</div><img src="+data.imagen+" style='height:200px;width:200px' class='card-img-top mx-auto' /><div class='card-body'><h5 class='card-text'>Champions: "+data.champions+"</h5><a href="+data.paginaWeb+">Página web</a><p class='card-text'>"+data.descripcion+"</p><a href='' class='btn btn-success'>Ver jugadores</a></div></div>");
                 }
             });
         }
